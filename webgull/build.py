@@ -57,7 +57,7 @@ def build(src='./src', dist='./dist', paths=None, with_deps=False):
         while len(cursor) >= len(src):
             template_path = path.join(cursor, TEMPLATE_NAME)
             if cursor not in templates_cache and path.exists(template_path):
-                contents = open(template_path).read()
+                contents = open(template_path, encoding='utf8').read()
                 includes = template_regex.findall(contents)
 
                 templates_cache[cursor] = {
@@ -83,7 +83,7 @@ def build(src='./src', dist='./dist', paths=None, with_deps=False):
             makedirs(leaf_dir)
 
         if filepath.endswith('html'):
-            contents = open(filepath).read()
+            contents = open(filepath, encoding='utf8').read()
             dir = path.realpath(path.dirname(filepath))
             
             # make sure we are going from least length to greater
@@ -114,7 +114,7 @@ def build(src='./src', dist='./dist', paths=None, with_deps=False):
                     template = '\n'.join([template, contents])
                     
                 contents = template
-                open(output_filepath, 'w').write(contents)
+                open(output_filepath, 'w', encoding='utf8').write(contents)
         else:
             contents = open(filepath, 'rb').read()
             open(output_filepath, 'wb').write(contents)
