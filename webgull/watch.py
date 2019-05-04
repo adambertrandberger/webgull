@@ -25,22 +25,22 @@ def color_string(*msg, color=GREEN):
 # if a single template file changes
 # need to recompile entire folder
 
-def watch(src='./src', dist='./dist', dirs=None, interval=0.5, force_build=False):
+def watch(src='./src', dist='./dist', paths=None, interval=0.5, force_build=False):
     global build
     build = force_build
     
     src = os.path.realpath(src)
     dist = os.path.realpath(dist)
 
-    if not dirs:
-        dirs = [src]
+    if not paths:
+        paths = [src]
     
     scheduler = sched.scheduler(time.time, time.sleep)
     def scan(scheduler):
         global build
         
         paths = []
-        for dir in dirs:
+        for dir in paths:
             realpath = os.path.join(src, dir)
             paths += filter(lambda x: not os.path.isdir(x), glob(os.path.join(realpath, '**', '*'), recursive=True))
 

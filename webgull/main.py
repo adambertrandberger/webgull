@@ -30,6 +30,6 @@ def entry():
             'interval': args.interval,
             'force_build': args.force_build
         }
-        build(**args)
+        watch(**args)
     else:
         sys.exit('Must supply either "build" or "watch"')
