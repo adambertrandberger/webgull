@@ -19,7 +19,9 @@ BLUE = 34
 build = False
 
 def color_string(*msg, color=GREEN):
-    return '\x1b[1;' + str(color) + 'm' + ' '.join(map(str, msg)) + '\x1b[0m'
+    if os.name != 'nt':
+        return '\x1b[1;' + str(color) + 'm' + ' '.join(map(str, msg)) + '\x1b[0m'
+    return ' '.join(msg)
 
 # need to watch template files
 # if a single template file changes
@@ -32,15 +34,17 @@ def watch(src='./src', dist='./dist', paths=None, interval=0.5, force_build=Fals
     src = os.path.realpath(src)
     dist = os.path.realpath(dist)
 
-    if not paths:
-        paths = [src]
-    
+    dirs = paths
+    if not dirs:
+        dirs = [src]
+
     scheduler = sched.scheduler(time.time, time.sleep)
     def scan(scheduler):
         global build
         
         paths = []
-        for dir in paths:
+
+        for dir in dirs:
             realpath = os.path.join(src, dir)
             paths += filter(lambda x: not os.path.isdir(x), glob(os.path.join(realpath, '**', '*'), recursive=True))
 
@@ -94,7 +98,7 @@ def watch(src='./src', dist='./dist', paths=None, interval=0.5, force_build=Fals
                 updates[i] = os.path.dirname(updates[i])
 
         if updates:
-            build_site(src=src, dist=dist, build_dirs=updates)
+            build_site(src=src, dist=dist, paths=updates)
         scheduler.enter(interval, 1, scan, (scheduler,))
         
     scheduler.enter(interval, 1, scan, (scheduler,))
